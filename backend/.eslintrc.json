@@ -25,6 +25,7 @@
   "rules": {
     "class-methods-use-this": "off",
     "no-bitwise": "off",
+    "import/prefer-default-export": "warn",
     "camelcase": "error",
     "no-useless-constructor": "warn",
     "prettier/prettier": "error",
