@@ -1,5 +1,7 @@
+-- o uuidv4 garante unicidade mas vai que o mundo acaba ne
+
 CREATE TABLE Estudante (
-  idEstudante uuid DEFAULT uuid_generate_v4(),
+  idEstudante uuid UNIQUE DEFAULT uuid_generate_v4(),
   nome varchar(100) NOT NULL,
   email varchar(100) NOT NULL,
   senha VARCHAR(100) NOT NULL,
@@ -9,7 +11,7 @@ CREATE TABLE Estudante (
 );
 
 CREATE TABLE Materia (
-  idMateria uuid DEFAULT uuid_generate_v4(),
+  idMateria uuid UNIQUE DEFAULT uuid_generate_v4(),
   sala varchar(100) NOT NULL,
   nome varchar(100) NOT NULL,
   professor varchar(100) NOT NULL,
@@ -22,7 +24,7 @@ CREATE TABLE Materia (
 );
 
 CREATE TABLE Assunto (
-  idAssunto uuid DEFAULT uuid_generate_v4(),
+  idAssunto uuid UNIQUE DEFAULT uuid_generate_v4(),
   descricao varchar(100) NOT NULL,
   idMateria uuid,
   CONSTRAINT pkAssunto
@@ -31,19 +33,19 @@ CREATE TABLE Assunto (
     FOREIGN KEY(idMateria) REFERENCES Materia(idMateria) ON DELETE CASCADE
 );
 
-CREATE TABLE Avaliacao (
-  idAvaliacao uuid DEFAULT uuid_generate_v4(),
+CREATE TABLE Simulado (
+  idSimulado uuid UNIQUE DEFAULT uuid_generate_v4(),
   titulo VARCHAR(100) NOT NULL,
   nota DECIMAL NOT NULL,
   idMateria uuid,
   CONSTRAINT pkAvaliacao
-    PRIMARY KEY(idAvaliacao),
+    PRIMARY KEY(idSimulado),
   CONSTRAINT fkMateria
     FOREIGN KEY(idMateria) REFERENCES Materia(idMateria) ON DELETE CASCADE
 );
 
 CREATE TABLE Estudo (
-  idEstudo uuid DEFAULT uuid_generate_v4(),
+  idEstudo uuid UNIQUE DEFAULT uuid_generate_v4(),
   horarioIni TIMESTAMP DEFAULT NOW(),
   horaFim TIMESTAMP,
   idMateria uuid,
@@ -54,29 +56,24 @@ CREATE TABLE Estudo (
 );
 
 CREATE TABLE Tarefa (
-  idTarefa uuid DEFAULT uuid_generate_v4(),
+  idTarefa uuid UNIQUE DEFAULT uuid_generate_v4(),
   descricao VARCHAR(100) NOT NULL,
   idEstudante uuid,
   CONSTRAINT pkTarefa PRIMARY KEY(idTarefa),
-  CONSTRAINT fkMateria FOREIGN KEY(idEstudante) REFERENCES Estudante(idEstudante) ON DELETE CASCADE,
+  CONSTRAINT fkTarefa FOREIGN KEY(idEstudante) REFERENCES Estudante(idEstudante) ON DELETE CASCADE,
 );
 
 CREATE TABLE Evento (
-  idEvento uuid DEFAULT uuid_generate_v4(),
+  idEvento uuid UNIQUE DEFAULT uuid_generate_v4(),
   horarioIni TIMESTAMP DEFAULT NOW(),
   horaFim TIMESTAMP,
   prioridade VARCHAR(100) NOT NULL,
   observacao VARCHAR(100) NOT NULL,
   data DATE NOT NULL,
-  idEstudante uuid,
-  idMateria uuid,
-  CONSTRAINT pkEvento PRIMARY KEY(idEvento),
-  CONSTRAINT fkEstudante FOREIGN KEY(idEstudante) REFERENCES Estudante(idEstudante) ON DELETE SET NULL,
-  CONSTRAINT fkMateria FOREIGN KEY(idMateria) REFERENCES Materia(idMateria) ON DELETE CASCADE
+  CONSTRAINT pkEvento PRIMARY KEY(idEvento),,
 );
 
-ALTER TABLE materia DROP CONSTRAINT fkAluno;
-ALTER TABLE materia DROP COLUMN idEstudante;
+
 
 CREATE TABLE Inscricao (
   idEstudante uuid,
@@ -89,8 +86,6 @@ CREATE TABLE Inscricao (
     FOREIGN KEY(idMateria) REFERENCES Materia(idMateria) ON DELETE CASCADE
 );
 
-ALTER TABLE Evento DROP CONSTRAINT fkEstudante;
-ALTER TABLE Evento DROP COLUMN idEstudante;
 
 CREATE TABLE EventoParticipacao (
   idEvento uuid,
@@ -102,14 +97,6 @@ CREATE TABLE EventoParticipacao (
   CONSTRAINT fkEstudante
     FOREIGN KEY(idEstudante) REFERENCES Estudante(idEstudante) ON DELETE SET NULL
 );
-
-ALTER TABLE Tarefa ADD COLUMN idMateria uuid;
-ALTER TABLE Tarefa DROP CONSTRAINT fkMateria;
-ALTER TABLE Tarefa ADD CONSTRAINT fkMateria
-    FOREIGN KEY(idMateria) REFERENCES Materia(idMateria) ON DELETE CASCADE;
-ALTER TABLE Tarefa ADD CONSTRAINT fkEstudante
-    FOREIGN KEY(idEstudante) REFERENCES Estudante(idEstudante) ON DELETE CASCADE;
-
 
 
 
