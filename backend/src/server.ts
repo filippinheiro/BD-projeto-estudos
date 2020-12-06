@@ -5,7 +5,7 @@ import 'express-async-errors';
 import express, { NextFunction, Request, Response } from 'express';
 
 import AppError from 'errors/AppError';
-import routes from './routes';
+import routes from './routes/index.routes';
 
 const PORT = Number(process.env.PORT) || 3333;
 const HOST = process.env.HOST || '0.0.0.0';

@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import CreateUserService from '../services/CreateUserService';
 
-export default class SignInController {
+export default class SignUpController {
   public async create(request: Request, response: Response): Promise<Response> {
     const { email, name, password } = request.body;
 
