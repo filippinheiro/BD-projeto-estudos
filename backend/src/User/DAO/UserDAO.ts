@@ -1,3 +1,1 @@
-export default class UserDAO {
-  password: string;
-}
+export default class UserDAO {}

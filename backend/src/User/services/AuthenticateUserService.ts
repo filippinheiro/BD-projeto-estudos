@@ -1,7 +1,7 @@
 import AppError from 'errors/AppError';
 import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
-import auth from 'config/auth';
+import auth from '../../config/auth';
 import UserDAO from '../DAO/UserDAO';
 
 interface RequestDTO {
