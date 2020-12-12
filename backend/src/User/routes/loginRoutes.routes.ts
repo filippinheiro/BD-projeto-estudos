@@ -1,10 +1,10 @@
-import LoginController from 'User/controllers/LoginController';
 import { Router } from 'express';
+import LoginController from '../controllers/LoginController';
 
 const userRoutes = Router();
 
-const authenticateController = new LoginController();
+const loginController = new LoginController();
 
-userRoutes.post('/', authenticateController.create);
+userRoutes.post('/', loginController.create);
 
 export default userRoutes;

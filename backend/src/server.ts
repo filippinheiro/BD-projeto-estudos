@@ -5,7 +5,10 @@ import 'express-async-errors';
 import express, { NextFunction, Request, Response } from 'express';
 import cors from 'cors';
 
-import AppError from 'errors/AppError';
+import pool from './database';
+import connection from './middlewares/connection';
+
+import AppError from './errors/AppError';
 import routes from './routes/index.routes';
 
 const PORT = Number(process.env.PORT) || 3333;
@@ -15,6 +18,7 @@ const app = express();
 
 app.use(cors());
 app.use(express.json());
+app.use(connection(pool));
 
 app.use('/api', routes);
 
@@ -25,7 +29,7 @@ app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
       message: err.message,
     });
   }
-  console.error(err);
+
   return response.status(500).json({
     status: 'error',
     message: 'internal server error',
@@ -34,4 +38,9 @@ app.use((err: Error, request: Request, response: Response, _: NextFunction) => {
 
 app.listen(PORT, HOST, () => {
   console.log(`server's up on ${PORT}`);
+});
+
+app.on('SIGNINT', async () => {
+  await pool.end();
+  console.log('Pool closed');
 });

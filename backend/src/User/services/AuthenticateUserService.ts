@@ -1,8 +1,10 @@
-import AppError from 'errors/AppError';
 import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
+import { PoolClient } from 'pg';
+import AppError from '../../errors/AppError';
 import auth from '../../config/auth';
 import UserDAO from '../DAO/UserDAO';
+import User from '../Model/User';
 
 interface RequestDTO {
   email: string;
@@ -10,15 +12,19 @@ interface RequestDTO {
 }
 
 interface ResponseDTO {
-  user: string;
+  user: User;
   token: string;
 }
 
 export default class AuthenticateUserService {
-  userDAO = new UserDAO();
+  userDAO: UserDAO;
+
+  constructor(client: PoolClient) {
+    this.userDAO = new UserDAO(client);
+  }
 
   public async execute({ email, password }: RequestDTO): Promise<ResponseDTO> {
-    const user = this.userDAO.findByEmail(email);
+    const user = await this.userDAO.findByEmail(email);
     let token = '';
 
     if (!user) {

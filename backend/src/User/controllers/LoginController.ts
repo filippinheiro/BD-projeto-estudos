@@ -5,7 +5,7 @@ export default class LoginController {
   public async create(request: Request, response: Response): Promise<Response> {
     const { email, password } = request.body;
 
-    const authenticateUser = new AuthenticateUserService();
+    const authenticateUser = new AuthenticateUserService(request.client);
 
     const { user, token } = await authenticateUser.execute({
       email,

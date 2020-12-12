@@ -3,20 +3,17 @@ import CreateUserService from '../services/CreateUserService';
 
 export default class SignUpController {
   public async create(request: Request, response: Response): Promise<Response> {
-    const { email, name, password } = request.body;
+    const { email, name, password, birth } = request.body;
 
-    const authenticateUser = new CreateUserService();
+    const createUser = new CreateUserService(request.client);
 
-    const user = await authenticateUser.execute({
+    const user = await createUser.execute({
       email,
       name,
       password,
+      birth,
     });
 
-    delete user.password;
-
-    return response.json({
-      user,
-    });
+    return response.json(user);
   }
 }
