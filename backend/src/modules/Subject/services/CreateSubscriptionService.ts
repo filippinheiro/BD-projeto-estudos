@@ -24,6 +24,8 @@ export default class ListSubjectService {
       await this.subjectDao.subscribe({ idStudent, idSubject });
       return;
     }
+
+    this.subjectDao.client.release();
     throw new AppError('Você já está inscrito nessa materia');
   }
 }

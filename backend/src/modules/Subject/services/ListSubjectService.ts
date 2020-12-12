@@ -16,7 +16,7 @@ export default class ListSubjectService {
 
       return subjects;
     } catch (err) {
-      throw new AppError(err, 500);
+      throw new AppError(err);
     }
   }
 }

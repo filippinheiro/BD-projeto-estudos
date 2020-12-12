@@ -18,18 +18,14 @@ export default class SubjectDAO {
     idStudent,
     idSubject,
   }: SubscriptionDTO): Promise<boolean> {
-    try {
-      const {
-        rowCount,
-      } = await this.client.query(
-        'SELECT * FROM inscricao WHERE idestudante=$1 AND idmateria=$2',
-        [idStudent, idSubject],
-      );
+    const {
+      rowCount,
+    } = await this.client.query(
+      'SELECT * FROM inscricao WHERE idestudante=$1 AND idmateria=$2',
+      [idStudent, idSubject],
+    );
 
-      return rowCount > 0;
-    } catch (err) {
-      throw new AppError(err);
-    }
+    return rowCount > 0;
   }
 
   public async subscribe({
