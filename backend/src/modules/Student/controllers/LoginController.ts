@@ -12,6 +12,8 @@ export default class LoginController {
       password,
     });
 
+    delete user.password;
+
     return response.json({
       user,
       token,

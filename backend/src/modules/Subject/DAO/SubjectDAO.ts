@@ -1,6 +1,11 @@
-import AppError from 'errors/AppError';
 import { PoolClient } from 'pg';
+import AppError from '../../../errors/AppError';
 import Subject from '../Models/Subject';
+
+interface SubscriptionDTO {
+  idStudent: string;
+  idSubject: string;
+}
 
 export default class SubjectDAO {
   client: PoolClient;
@@ -9,17 +14,34 @@ export default class SubjectDAO {
     this.client = client;
   }
 
-  public async subscribe(idStudent: string, idSubject: string): Promise<void> {
+  public async findSubscription({
+    idStudent,
+    idSubject,
+  }: SubscriptionDTO): Promise<boolean> {
     try {
-      const result = await this.client.query(
-        'INSERT INTO inscricao(idestudante, idmateria) VALUES ($1, $2)',
+      const {
+        rowCount,
+      } = await this.client.query(
+        'SELECT * FROM inscricao WHERE idestudante=$1 AND idmateria=$2',
         [idStudent, idSubject],
       );
+
+      return rowCount > 0;
     } catch (err) {
-      throw new AppError(err, 500);
-    } finally {
-      this.client.release();
+      throw new AppError(err);
     }
+  }
+
+  public async subscribe({
+    idStudent,
+    idSubject,
+  }: SubscriptionDTO): Promise<void> {
+    await this.client.query(
+      'INSERT INTO inscricao(idestudante, idmateria) VALUES ($1, $2)',
+      [idStudent, idSubject],
+    );
+
+    this.client.release();
   }
 
   public async listAll(): Promise<Subject[] | null> {

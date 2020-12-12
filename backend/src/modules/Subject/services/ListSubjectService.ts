@@ -18,7 +18,5 @@ export default class ListSubjectService {
     } catch (err) {
       throw new AppError(err, 500);
     }
-
-    return null;
   }
 }

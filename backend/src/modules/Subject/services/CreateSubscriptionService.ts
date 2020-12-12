@@ -15,10 +15,15 @@ export default class ListSubjectService {
   }
 
   public async execute({ idStudent, idSubject }: RequestDTO): Promise<void> {
-    try {
-      await this.subjectDao.subscribe(idStudent, idSubject);
-    } catch (err) {
-      throw new AppError(err, 500);
+    const subscribedAlready = await this.subjectDao.findSubscription({
+      idStudent,
+      idSubject,
+    });
+
+    if (!subscribedAlready) {
+      await this.subjectDao.subscribe({ idStudent, idSubject });
+      return;
     }
+    throw new AppError('Você já está inscrito nessa materia');
   }
 }
