@@ -12,6 +12,7 @@ pool.on('acquire', () => {
 });
 
 pool.on('remove', () => {
-  console.log('Connection removed');
+  console.log('Client removed');
 });
+
 export default pool;

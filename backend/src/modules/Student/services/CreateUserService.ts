@@ -1,7 +1,7 @@
 import { hash } from 'bcryptjs';
 import { PoolClient } from 'pg';
 
-import AppError from '../../errors/AppError';
+import AppError from '../../../errors/AppError';
 
 import UserDAO from '../DAO/UserDAO';
 import User from '../Model/User';

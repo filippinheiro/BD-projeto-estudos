@@ -1,4 +1,5 @@
 -- o uuidv4 garante unicidade mas vai que o mundo acaba ne
+CREATE DATABASE trabalhobd
 
 CREATE TABLE Estudante (
   idEstudante uuid UNIQUE DEFAULT uuid_generate_v4(),
@@ -16,12 +17,22 @@ CREATE TABLE Materia (
   nome varchar(100) NOT NULL,
   professor varchar(100) NOT NULL,
   observacao VARCHAR(255),
-  idEstudante uuid,
   CONSTRAINT pkMateria
-    PRIMARY KEY(idMateria),
-  CONSTRAINT fkEstudante
-    FOREIGN KEY(idEstudante) REFERENCES Estudante(idEstudante) ON DELETE SET NULL
+    PRIMARY KEY(idMateria)
 );
+
+
+CREATE TABLE Inscricao (
+  idEstudante uuid,
+  idMateria uuid,
+  CONSTRAINT pkInscricao 
+    PRIMARY KEY(idEstudante, idMateria),
+  CONSTRAINT fkEstudante
+    FOREIGN KEY(idEstudante) REFERENCES Estudante(idEstudante) ON DELETE SET NULL,
+  CONSTRAINT fkMateria
+    FOREIGN KEY(idMateria) REFERENCES Materia(idMateria) ON DELETE CASCADE
+);
+
 
 CREATE TABLE Assunto (
   idAssunto uuid UNIQUE DEFAULT uuid_generate_v4(),
@@ -38,10 +49,11 @@ CREATE TABLE Simulado (
   titulo VARCHAR(100) NOT NULL,
   nota DECIMAL NOT NULL,
   idMateria uuid,
+  idEstudante uuid,
   CONSTRAINT pkAvaliacao
     PRIMARY KEY(idSimulado),
-  CONSTRAINT fkMateria
-    FOREIGN KEY(idMateria) REFERENCES Materia(idMateria) ON DELETE CASCADE
+  CONSTRAINT fkInscricao
+    FOREIGN KEY(idMateria, idEstudante) REFERENCES Inscricao(idMateria, idEstudante) ON DELETE CASCADE
 );
 
 CREATE TABLE Estudo (
@@ -49,10 +61,11 @@ CREATE TABLE Estudo (
   horarioIni TIMESTAMP DEFAULT NOW(),
   horaFim TIMESTAMP,
   idMateria uuid,
+  idEstudante uuid,
   CONSTRAINT pkEstudo
     PRIMARY KEY(idEstudo),
   CONSTRAINT fkMateria
-    FOREIGN KEY(idMateria) REFERENCES Materia(idMateria) ON DELETE CASCADE
+    FOREIGN KEY(idMateria, idEstudante) REFERENCES Inscricao(idMateria, idEstudante) ON DELETE CASCADE
 );
 
 CREATE TABLE Tarefa (
@@ -71,19 +84,6 @@ CREATE TABLE Evento (
   observacao VARCHAR(100) NOT NULL,
   data DATE NOT NULL,
   CONSTRAINT pkEvento PRIMARY KEY(idEvento),,
-);
-
-
-
-CREATE TABLE Inscricao (
-  idEstudante uuid,
-  idMateria uuid,
-  CONSTRAINT pkInscricao 
-    PRIMARY KEY(idEstudante, idMateria),
-  CONSTRAINT fkEstudante
-    FOREIGN KEY(idEstudante) REFERENCES Estudante(idEstudante) ON DELETE SET NULL,
-  CONSTRAINT fkMateria
-    FOREIGN KEY(idMateria) REFERENCES Materia(idMateria) ON DELETE CASCADE
 );
 
 

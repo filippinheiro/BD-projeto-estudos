@@ -1,8 +1,8 @@
 import { compare } from 'bcryptjs';
 import { sign } from 'jsonwebtoken';
 import { PoolClient } from 'pg';
-import AppError from '../../errors/AppError';
-import auth from '../../config/auth';
+import AppError from '../../../errors/AppError';
+import auth from '../../../config/auth';
 import UserDAO from '../DAO/UserDAO';
 import User from '../Model/User';
 
