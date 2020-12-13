@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import Subject from 'modules/Subject/Models/Subject';
 import { PoolClient } from 'pg';
 import AppError from '../../../errors/AppError';
 import User from '../Model/User';
@@ -8,6 +9,14 @@ interface createUserDTO {
   e_mail: string;
   password: string;
   birth: Date;
+}
+
+interface SubjectResult {
+  idmateria: string;
+  observacao: string;
+  nome: string;
+  professor: string;
+  sala: string;
 }
 
 export default class UserDAO {
@@ -93,10 +102,88 @@ export default class UserDAO {
     }
   }
 
+  async profile(id: string): Promise<User | null> {
+    try {
+      const result = await this.client.query(
+        `SELECT e.* from estudante e
+        WHERE e.idestudante=$1`,
+        [id],
+      );
+
+      if (result.rowCount > 0) {
+        const users = result.rows.map(async (item) => {
+          const { nome, email, senha, idestudante, datanascimento } = item;
+          let subjects: Subject[] = [];
+          let user: User | null = null;
+
+          const data = await this.client.query<SubjectResult>(
+            `SELECT m.*
+            FROM estudante e
+              LEFT JOIN inscricao i ON e.idestudante = i.idestudante
+              LEFT JOIN materia m ON i.idmateria = m.idmateria
+             WHERE e.idestudante=$1`,
+            [id],
+          );
+
+          if (data.rows[0].idmateria) {
+            subjects = data.rows.map((subject) => {
+              const {
+                idmateria,
+                sala,
+                nome: nomeMateria,
+                professor,
+                observacao,
+              } = subject;
+
+              return new Subject({
+                id: idmateria,
+                classroom: sala,
+                name: nomeMateria,
+                teacher: professor,
+                observations: observacao,
+              });
+            });
+          }
+
+          user = new User({
+            name: nome,
+            email,
+            password: senha,
+            id: idestudante,
+            birth: datanascimento,
+            subjects,
+          });
+
+          return user;
+        });
+
+        this.client.release();
+
+        return users[0];
+      }
+    } catch (err) {
+      this.client.release();
+      throw new AppError(err);
+    }
+    return null;
+  }
+
+  async deleteById(id: string): Promise<void> {
+    try {
+      await this.client.query('DELETE FROM estudante WHERE idestudante=$1', [
+        id,
+      ]);
+      this.client.release();
+    } catch (err) {
+      this.client.release();
+      throw new AppError(err);
+    }
+  }
+
   async findById(id: string): Promise<User | null> {
     try {
       const result = await this.client.query(
-        'SELECT * FROM estudante WHERE idestudante=$1',
+        `SELECT * FROM estudante WHERE idestudante=$1`,
         [id],
       );
 
@@ -124,18 +211,6 @@ export default class UserDAO {
       throw new AppError(err);
     }
     return null;
-  }
-
-  async deleteById(id: string): Promise<void> {
-    try {
-      await this.client.query('DELETE FROM estudante WHERE idestudante=$1', [
-        id,
-      ]);
-      this.client.release();
-    } catch (err) {
-      this.client.release();
-      throw new AppError(err);
-    }
   }
 
   // DO NOT USE IT (I cannot stress this enough)

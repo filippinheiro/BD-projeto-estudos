@@ -27,22 +27,22 @@ export default class AuthenticateUserService {
     const user = await this.userDAO.findByEmail(email);
     let token = '';
 
-    if (!user) {
-      throw new AppError('Invalid Email or password', 401);
+    if (user) {
+      if (await compare(password, user.password)) {
+        token = sign({}, auth.jwt.secret, {
+          subject: user.id,
+          expiresIn: auth.jwt.expiresIn,
+        });
+      } else {
+        throw new AppError('Invalid email or password', 401);
+      }
+
+      return {
+        user,
+        token,
+      };
     }
 
-    if (compare(password, user.password)) {
-      token = sign({}, auth.jwt.secret, {
-        subject: user.id,
-        expiresIn: auth.jwt.expiresIn,
-      });
-    } else {
-      throw new AppError('Invalid email or password', 401);
-    }
-
-    return {
-      user,
-      token,
-    };
+    throw new AppError('Invalid Email or password', 401);
   }
 }
