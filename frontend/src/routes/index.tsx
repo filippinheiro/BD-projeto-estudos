@@ -7,6 +7,9 @@ import SignIn from '../pages/SignIn';
 import SignUp from '../pages/SignUp';
 import Dashboard from '../pages/Dashboard';
 import Profile from '../pages/Profile';
+import Subject from '../pages/Subject';
+import Subscribe from '../pages/Subscribe';
+import Create from '../pages/Create';
 
 const Routes: React.FC = () => (
   <Switch>
@@ -15,6 +18,9 @@ const Routes: React.FC = () => (
 
     <Route path="/dashboard" component={Dashboard} isPrivate />
     <Route path="/profile" component={Profile} isPrivate />
+    <Route path="/subject/:idSubject" component={Subject} isPrivate />
+    <Route path="/subscribe" component={Subscribe} isPrivate />
+    <Route path="/create" component={Create} isPrivate />
   </Switch>
 );
 

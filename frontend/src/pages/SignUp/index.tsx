@@ -1,13 +1,17 @@
 import React, { useCallback, useRef } from 'react';
-import { FiMail, FiLock, FiUser, FiArrowLeft, FiInfo, FiCalendar } from 'react-icons/fi';
+import {
+  FiMail,
+  FiLock,
+  FiUser,
+  FiArrowLeft,
+  FiCalendar,
+} from 'react-icons/fi';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import { Link, useHistory } from 'react-router-dom';
 import * as Yup from 'yup';
 
-import logoImg from '../../assets/logo.svg';
-
-import { Content, Container, Background, AnimationContainer } from './styles';
+import { Content, Container, AnimationContainer } from './styles';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import getValidationError from '../../utils/getValidationErrors';
@@ -36,14 +40,14 @@ const SingUp: React.FC = () => {
             .required('E-mail obrigatório')
             .email('Digite um e-mail válido'),
           password: Yup.string().min(6, 'No mínimo 6 dígitos'),
-          birth: Yup.date().required('Data de nascimento obrigatoria')
+          birth: Yup.date().required('Data de nascimento obrigatoria'),
         });
 
         await schema.validate(data, {
           abortEarly: false,
         });
 
-        await api.post('/users/signup', data);
+        await api.post('/signup', data);
 
         addToast({
           title: 'Cadastro realizado',
@@ -71,10 +75,8 @@ const SingUp: React.FC = () => {
 
   return (
     <Container>
-      <Background />
       <Content>
         <AnimationContainer>
-          <img src={logoImg} alt="GoBarber" />
           <Form ref={formRef} onSubmit={handleSubmit}>
             <h1>Faça seu cadastro</h1>
             <Input icon={FiUser} name="name" placeholder="Nome" />
@@ -91,13 +93,15 @@ const SingUp: React.FC = () => {
               placeholder="Senha"
             />
             <Input
-            icon={FiCalendar}
+              icon={FiCalendar}
               name="birth"
               type="date"
               placeholder="Data de Nascimento"
-              required pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
+              required
+              pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}"
               max="2013-01-01"
-              min="1930-01-01"/>
+              min="1930-01-01"
+            />
             <Button type="submit">Cadastrar</Button>
           </Form>
           <Link to="/">

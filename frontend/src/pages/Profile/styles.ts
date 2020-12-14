@@ -6,7 +6,7 @@ export const Container = styled.div`
 
   > header {
     height: 144px;
-    background: #28282e;
+    background: #005b9f;
 
     display: flex;
 
@@ -20,7 +20,7 @@ export const Container = styled.div`
       svg {
         width: 24px;
         height: 24px;
-        color: #999591;
+        color: #fff;
       }
     }
   }

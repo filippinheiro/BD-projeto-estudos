@@ -1,11 +1,14 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import { isToday, format, parseISO, isAfter } from 'date-fns';
-import { useHistory, Link } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 
-import { FiPower, FiClock } from 'react-icons/fi';
+import { FiPlus, FiPower } from 'react-icons/fi';
 
-import 'react-day-picker/lib/style.css';
-import ptBR from 'date-fns/locale/pt-BR';
+import {
+  Checkbox,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+} from '@material-ui/core';
 
 import {
   Container,
@@ -13,14 +16,15 @@ import {
   HeaderContent,
   Profile,
   Content,
-  Schedule,
+  SubjectList,
   Section,
-  Appointment,
+  Subject,
+  Subscribe,
+  TaskList,
 } from './styles';
 import { useAuth } from '../../hooks/auth';
 
 import api from '../../services/api';
-import { useToast } from '../../hooks/toast';
 
 interface Subject {
   name: string;
@@ -38,19 +42,55 @@ interface User {
   subjects: Subject[];
 }
 
+interface Task {
+  id: string;
+  description: string;
+  complete: boolean;
+}
+
 const Dashboard: React.FC = () => {
   const [subjects, setSubjects] = useState<Subject[]>([]);
 
+  const [checked, setChecked] = React.useState<string[]>([]);
+
+  const [tasks, setTasks] = useState<Task[]>([]);
   const { signOut, user } = useAuth();
-  const { addToast } = useToast();
-  const history = useHistory();
 
   useEffect(() => {
-    api.get<User>('/profile').then((response) => {
-      setSubjects(response.data.subjects);
-    });
-    console.log('called');
+    async function load(): Promise<void> {
+      api.get<User>('/users/profile').then((response) => {
+        setSubjects(response.data?.subjects);
+      });
+    }
+
+    load();
   }, []);
+
+  useEffect(() => {
+    async function load(): Promise<void> {
+      api.get<Task[]>('/users/tasks').then((response) => {
+        setTasks(response.data);
+      });
+    }
+
+    load();
+  }, []);
+
+  const handleToggle = useCallback(
+    (value: string) => {
+      const currentIndex = checked.indexOf(value);
+      const newChecked = [...checked];
+
+      if (currentIndex === -1) {
+        newChecked.push(value);
+      } else {
+        newChecked.splice(currentIndex, 1);
+      }
+
+      setChecked(newChecked);
+    },
+    [checked],
+  );
 
   return (
     <Container>
@@ -72,18 +112,62 @@ const Dashboard: React.FC = () => {
       </Header>
 
       <Content>
-        <Schedule>
+        <SubjectList>
+          <strong>Matérias</strong>
           <Section>
+            {subjects?.length === 0 && (
+              <strong>Você ainda não se inscreveu em nenhuma matéria</strong>
+            )}
             {subjects.map((item) => (
-              <Appointment key={item.id}>
-                <span>{item.classroom}</span>
-                <div>
-                  <strong>{item.name}</strong>
-                </div>
-              </Appointment>
+              <Link
+                to={{
+                  pathname: `/subject/${item.id}`,
+                }}
+                key={item.id}
+                style={{
+                  textDecoration: 'none',
+                  marginBottom: '10px',
+                  marginTop: '10px',
+                }}
+              >
+                <Subject>
+                  <span>{item.classroom}</span>
+                  <div>
+                    <strong>{item.name}</strong>
+                  </div>
+                </Subject>
+              </Link>
             ))}
+
+            <Subscribe>
+              <div>
+                <Link to="/subscribe">
+                  <strong>Inscreva-se</strong>
+                </Link>
+              </div>
+            </Subscribe>
           </Section>
-        </Schedule>
+        </SubjectList>
+
+        <TaskList>
+          <strong>Tarefas</strong>
+          <Link to="/create">
+            <FiPlus size={20} />
+          </Link>
+          {tasks.map((item) => (
+            <ListItem key={item.id}>
+              <ListItemIcon>
+                <Checkbox
+                  checked={checked.indexOf(item.id) !== -1}
+                  onClick={() => {
+                    handleToggle(item.id);
+                  }}
+                />
+              </ListItemIcon>
+              <ListItemText id={item.id} primary={item.description} />
+            </ListItem>
+          ))}
+        </TaskList>
       </Content>
     </Container>
   );

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { shade } from 'polished';
 
 export const Container = styled.div`
-  justify-content: center;
+  align-content: center;
   height: 100vh;
   align-items: center;
 `;
@@ -72,33 +72,8 @@ export const Profile = styled.div`
   }
 `;
 
-export const TaskList = styled.div`
-  margin-top: 16px;
-  margin-bottom: 16px;
-  font-size: 36px;
-  flex-direction: column;
-  font-weight: bold;
-
-  a {
-    text-decoration: none;
-    color: #fff;
-  }
-
-  svg {
-    margin-left: 5px;
-  }
-`;
-
-export const TaskCheck = styled.div`
-  span {
-    font-size: 24px;
-    font-weight: 400;
-  }
-`;
-
 export const Content = styled.main`
   max-width: 1120px;
-  flex-direction: column;
   margin: 64px auto;
 
   display: flex;
@@ -119,28 +94,26 @@ export const SubjectList = styled.div`
 `;
 
 export const Section = styled.section`
-  margin-top: 48px;
-  flex: 1;
-  height: auto;
+  height: 100%;
 
   strong {
     font-weight: 400;
     font-size: 24px;
   }
 
-  display: flex;
+  display: grid;
   font-weight: 400;
-  flex-direction: column;
+  grid-template-columns: 1fr;
 `;
 
 export const Subscribe = styled.div`
   background: #005b9f;
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 16px;
-
-  height: auto;
+  align-content: center;
+  flex-direction: column;
+  place-content: center;
+  height: 100%;
   margin-left: 10px;
   flex: 1;
   margin-top: 10px;
@@ -150,20 +123,16 @@ export const Subscribe = styled.div`
   margin-right: 10px;
   border-radius: 10px;
 
-  div {
-    align-items: center;
-    justify-content: center;
-    a {
-      text-decoration: none;
-      color: #fff;
-      font-weight: bold;
+  a {
+    flex: 1;
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
 
-      margin-top: 30px;
+    margin-top: 30px;
 
-      strong {
-        margin-top: 16px;
-        align-self: center;
-      }
+    strong {
+      margin-top: 16px;
     }
   }
 `;
@@ -174,9 +143,8 @@ export const Subject = styled.div`
   margin-left: 10px;
   margin-bottom: 16px;
   margin-right: 10px;
-  padding: 16px;
   border-radius: 10px;
-  height: auto;
+  height: 100%;
   background: #005b9f;
 
   span {
@@ -188,11 +156,12 @@ export const Subject = styled.div`
   }
 
   div {
+    flex: 1;
     background: #005b9f;
     display: flex;
     flex-direction: row;
     align-items: center;
-    justify-content: center;
+    align-content: center;
     border-radius: 10px;
 
     margin-left: 24px;

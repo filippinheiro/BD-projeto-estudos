@@ -1,11 +1,17 @@
-import React, { useCallback, useRef, ChangeEvent } from 'react';
-import { FiMail, FiLock, FiUser, FiCamera, FiArrowLeft } from 'react-icons/fi';
+import React, { useCallback, useRef } from 'react';
+import {
+  FiMail,
+  FiLock,
+  FiUser,
+  FiArrowLeft,
+  FiCalendar,
+} from 'react-icons/fi';
 import { FormHandles } from '@unform/core';
 import { Form } from '@unform/web';
 import { useHistory, Link } from 'react-router-dom';
 import * as Yup from 'yup';
 
-import { Content, Container, AvatarInput } from './styles';
+import { Content, Container } from './styles';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 import getValidationError from '../../utils/getValidationErrors';
@@ -45,38 +51,14 @@ const Profile: React.FC = () => {
           email: Yup.string()
             .required('E-mail obrigatório')
             .email('Digite um e-mail válido'),
-          old_password: Yup.string(),
-          password: Yup.string().when('old_password', {
-            is: (val) => !!val.length,
-            then: Yup.string().required('Campo obrigatório'),
-            otherwise: Yup.string(),
-          }),
-          password_confirmation: Yup.string()
-            .when('old_password', {
-              is: (val) => !!val.length,
-              then: Yup.string().required('Campo obrigatório'),
-              otherwise: Yup.string(),
-            })
-            .oneOf([Yup.ref('password'), null], 'Senhas não batem'),
+          birth: Yup.date().required('Data de nascimento obrigatoria'),
         });
 
         await schema.validate(data, {
           abortEarly: false,
         });
 
-        const formData = {
-          name: data.name,
-          email: data.email,
-          ...(data.old_password
-            ? {
-                old_password: data.old_password,
-                password: data.password,
-                password_confirmation: data.password_confirmation,
-              }
-            : {}),
-        };
-
-
+        await api.put('/users', data);
 
         history.push('/');
 
@@ -101,7 +83,7 @@ const Profile: React.FC = () => {
         });
       }
     },
-    [addToast, history, updateUser],
+    [addToast, history],
   );
 
   return (
@@ -120,37 +102,21 @@ const Profile: React.FC = () => {
           initialData={{
             name: user.name,
             email: user.email,
+            birt: user.birth,
           }}
           onSubmit={handleSubmit}
         >
-
           <h1>Meu perfil</h1>
 
           <Input icon={FiUser} name="name" placeholder="Nome" />
           <Input icon={FiMail} name="email" placeholder="E-mail" type="text" />
           <Input
-            containerStyle={{
-              marginTop: 24,
-            }}
-            icon={FiLock}
-            name="old_password"
-            type="password"
-            placeholder="Senha atual"
+            icon={FiCalendar}
+            name="birth"
+            placeholder="Data de Nascimento"
+            type="date"
           />
 
-          <Input
-            icon={FiLock}
-            name="password"
-            type="password"
-            placeholder="Nova senha"
-          />
-
-          <Input
-            icon={FiLock}
-            name="password_confirmation"
-            type="password"
-            placeholder="Confirmar senha"
-          />
           <Button type="submit">Confirmar Mudanças</Button>
         </Form>
       </Content>

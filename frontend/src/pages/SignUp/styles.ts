@@ -1,11 +1,11 @@
 import styled, { keyframes } from 'styled-components';
 import { shade } from 'polished';
-import signUpBackgroundImg from '../../assets/sign-up-background.png';
 
 export const Container = styled.div`
   height: 100vh;
   display: flex;
-  align-items: stretch;
+  align-items: center;
+  justify-content: center;
 `;
 
 export const Content = styled.div`
@@ -61,7 +61,7 @@ export const AnimationContainer = styled.div`
     }
   }
   > a {
-    color: #ff9000;
+    color: #005b9f;
     display: flex;
     align-items: center;
     text-decoration: none;
@@ -72,13 +72,7 @@ export const AnimationContainer = styled.div`
     }
 
     &:hover {
-      color: ${shade(0.2, '#ff9000')};
+      color: ${shade(0.2, '#005b9f')};
     }
   }
-`;
-
-export const Background = styled.div`
-  flex: 1;
-  background: url(${signUpBackgroundImg}) no-repeat center;
-  background-size: cover;
 `;

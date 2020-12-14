@@ -3,7 +3,6 @@ import { shade } from 'polished';
 
 export const Container = styled.div`
   justify-content: center;
-  height: 100vh;
   align-items: center;
 `;
 
@@ -27,6 +26,10 @@ export const HeaderContent = styled.div`
     margin-left: auto;
     background: transparent;
     border: 0;
+  }
+
+  a {
+    text-decoration: none;
   }
 
   svg {
@@ -58,10 +61,6 @@ export const Profile = styled.div`
     line-height: 24px;
   }
 
-  a {
-    text-decoration: none;
-  }
-
   span {
     color: #f4ede8;
   }
@@ -72,112 +71,58 @@ export const Profile = styled.div`
   }
 `;
 
-export const TaskList = styled.div`
-  margin-top: 16px;
-  margin-bottom: 16px;
-  font-size: 36px;
-  flex-direction: column;
-  font-weight: bold;
-
-  a {
-    text-decoration: none;
-    color: #fff;
-  }
-
-  svg {
-    margin-left: 5px;
-  }
-`;
-
-export const TaskCheck = styled.div`
-  span {
-    font-size: 24px;
-    font-weight: 400;
-  }
-`;
-
 export const Content = styled.main`
   max-width: 1120px;
-  flex-direction: column;
   margin: 64px auto;
 
   display: flex;
 `;
 
-export const SubjectList = styled.div`
+export const ExamList = styled.div`
   flex: 1;
   margin-right: 120px;
-
-  h1 {
-    font-size: 36px;
-  }
-
   strong {
     font-size: 36px;
     font-weight: bold;
+  }
+  h1 {
+    font-size: 36px;
   }
 `;
 
 export const Section = styled.section`
   margin-top: 48px;
-  flex: 1;
   height: auto;
+
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 
   strong {
     font-weight: 400;
     font-size: 24px;
   }
-
-  display: flex;
-  font-weight: 400;
-  flex-direction: column;
-`;
-
-export const Subscribe = styled.div`
-  background: #005b9f;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 16px;
-
-  height: auto;
-  margin-left: 10px;
-  flex: 1;
-  margin-top: 10px;
-
-  height: auto;
-  margin-bottom: 10px;
-  margin-right: 10px;
-  border-radius: 10px;
-
-  div {
-    align-items: center;
-    justify-content: center;
-    a {
-      text-decoration: none;
-      color: #fff;
-      font-weight: bold;
-
-      margin-top: 30px;
-
-      strong {
-        margin-top: 16px;
-        align-self: center;
-      }
-    }
+  p {
+    color: #999591;
   }
 `;
 
-export const Subject = styled.div`
+export const ExamCard = styled.div`
   display: flex;
   align-items: center;
   margin-left: 10px;
   margin-bottom: 16px;
   margin-right: 10px;
-  padding: 16px;
   border-radius: 10px;
   height: auto;
   background: #005b9f;
+
+  #nota {
+    background-color: ${shade(0.2, '#005b9f')};
+    width: auto;
+    height: 5vh;
+    padding: 10px;
+    border-radius: 10px;
+  }
 
   span {
     margin-left: 15px;
@@ -188,6 +133,7 @@ export const Subject = styled.div`
   }
 
   div {
+    flex: 1;
     background: #005b9f;
     display: flex;
     flex-direction: row;
@@ -196,6 +142,15 @@ export const Subject = styled.div`
     border-radius: 10px;
 
     margin-left: 24px;
+
+    button {
+      flex: 1;
+
+      margin-right: 10px;
+      margin-bottom: 10px;
+      align-self: center;
+      cursor: not-allowed;
+    }
 
     strong {
       flex: 1;
