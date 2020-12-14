@@ -3,7 +3,7 @@ import UserDAO from '../DAO/UserDAO';
 import User from '../Model/User';
 
 export default class ListUsersService {
-  userDao: UserDAO;
+  private userDao: UserDAO;
 
   constructor(client: PoolClient) {
     this.userDao = new UserDAO(client);

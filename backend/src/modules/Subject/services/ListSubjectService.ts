@@ -4,7 +4,7 @@ import SubjectDAO from '../DAO/SubjectDAO';
 import Subject from '../Models/Subject';
 
 export default class ListSubjectService {
-  subjectDao: SubjectDAO;
+  private subjectDao: SubjectDAO;
 
   constructor(client: PoolClient) {
     this.subjectDao = new SubjectDAO(client);

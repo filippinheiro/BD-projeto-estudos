@@ -11,6 +11,7 @@ const subscriptionController = new SubscriptionController();
 subjectRoutes.use(ensureAuthenticaded);
 
 subjectRoutes.get('/', subjectController.index);
+subjectRoutes.get('/average/:idSubject', subjectController.show);
 subjectRoutes.post('/subscribe', subscriptionController.create);
 
 export default subjectRoutes;

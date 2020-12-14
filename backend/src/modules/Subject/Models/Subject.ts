@@ -6,6 +6,7 @@ interface SubjectDTO {
   name: string;
   teacher: string;
   observations?: string;
+  average?: number;
   students?: User[];
 }
 
@@ -20,6 +21,8 @@ export default class Subject {
 
   observations: string;
 
+  average: number;
+
   students: User[];
 
   constructor({
@@ -28,12 +31,14 @@ export default class Subject {
     name,
     teacher,
     observations = '',
+    average = 0,
     students = [],
   }: SubjectDTO) {
     this.id = id;
     this.classroom = classroom;
     this.name = name;
     this.teacher = teacher;
+    this.average = average;
     this.observations = observations;
     this.students = students;
   }

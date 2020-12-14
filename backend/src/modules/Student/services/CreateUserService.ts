@@ -14,7 +14,7 @@ interface RequestDTO {
 }
 
 export default class CreateUserService {
-  userDAO: UserDAO;
+  private userDAO: UserDAO;
 
   constructor(client: PoolClient) {
     this.userDAO = new UserDAO(client);

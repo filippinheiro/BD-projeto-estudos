@@ -1,5 +1,6 @@
 -- o uuidv4 garante unicidade mas vai que o mundo acaba ne
-CREATE DATABASE trabalhobd
+CREATE DATABASE trabalhobd;
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp"
 
 CREATE TABLE Estudante (
   idEstudante uuid UNIQUE DEFAULT uuid_generate_v4(),
@@ -73,17 +74,15 @@ CREATE TABLE Tarefa (
   descricao VARCHAR(100) NOT NULL,
   idEstudante uuid,
   CONSTRAINT pkTarefa PRIMARY KEY(idTarefa),
-  CONSTRAINT fkTarefa FOREIGN KEY(idEstudante) REFERENCES Estudante(idEstudante) ON DELETE CASCADE,
+  CONSTRAINT fkTarefa FOREIGN KEY(idEstudante) REFERENCES Estudante(idEstudante) ON DELETE CASCADE
 );
 
 CREATE TABLE Evento (
   idEvento uuid UNIQUE DEFAULT uuid_generate_v4(),
-  horarioIni TIMESTAMP DEFAULT NOW(),
-  horaFim TIMESTAMP,
+  data DATE NOT NULL;
   prioridade VARCHAR(100) NOT NULL,
   observacao VARCHAR(100) NOT NULL,
-  data DATE NOT NULL,
-  CONSTRAINT pkEvento PRIMARY KEY(idEvento),,
+  CONSTRAINT pkEvento PRIMARY KEY(idEvento)
 );
 
 

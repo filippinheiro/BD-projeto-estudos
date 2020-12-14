@@ -14,6 +14,34 @@ export default class SubjectDAO {
     this.client = client;
   }
 
+  public async findAverageGrade({
+    idStudent,
+    idSubject,
+  }: SubscriptionDTO): Promise<number> {
+    let average = 0;
+
+    const result = await this.client.query(
+      `
+      select ROUND(AVG(s.nota), 2) as MEDIA from
+        simulado s
+          inner join inscricao i on s.idestudante=i.idestudante and s.idmateria=i.idmateria
+          inner join estudante e on i.idestudante = e.idestudante 
+          inner join materia m on i.idmateria = m.idmateria 
+      where e.idestudante=$1 and m.idmateria=$2
+      group by (e.idestudante, m.idmateria) 
+    `,
+      [idStudent, idSubject],
+    );
+
+    if (result.rowCount > 0) {
+      average = result.rows[0].media;
+    }
+
+    this.client.release();
+
+    return average;
+  }
+
   public async findSubscription({
     idStudent,
     idSubject,
@@ -32,15 +60,20 @@ export default class SubjectDAO {
     idStudent,
     idSubject,
   }: SubscriptionDTO): Promise<void> {
-    await this.client.query(
-      'INSERT INTO inscricao(idestudante, idmateria) VALUES ($1, $2)',
-      [idStudent, idSubject],
-    );
+    try {
+      await this.client.query(
+        'INSERT INTO inscricao(idestudante, idmateria) VALUES ($1, $2)',
+        [idStudent, idSubject],
+      );
 
-    this.client.release();
+      this.client.release();
+    } catch (err) {
+      this.client.release();
+      throw new AppError('Are you sure the subject exists?');
+    }
   }
 
-  public async listAll(): Promise<Subject[] | null> {
+  public async listAll(): Promise<Subject[]> {
     try {
       const result = await this.client.query('SELECT * FROM materia');
 
@@ -66,6 +99,6 @@ export default class SubjectDAO {
       this.client.release();
       throw new AppError(err);
     }
-    return null;
+    return [] as Subject[];
   }
 }

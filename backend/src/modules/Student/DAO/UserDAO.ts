@@ -1,4 +1,5 @@
 /* eslint-disable camelcase */
+import SubjectDAO from 'modules/Subject/DAO/SubjectDAO';
 import Subject from 'modules/Subject/Models/Subject';
 import { PoolClient } from 'pg';
 import AppError from '../../../errors/AppError';
@@ -11,6 +12,13 @@ interface createUserDTO {
   birth: Date;
 }
 
+interface updateUserDTO {
+  name: string;
+  e_mail: string;
+  birth: Date;
+  id: string;
+}
+
 interface SubjectResult {
   idmateria: string;
   observacao: string;
@@ -20,7 +28,7 @@ interface SubjectResult {
 }
 
 export default class UserDAO {
-  client: PoolClient;
+  private client: PoolClient;
 
   constructor(client: PoolClient) {
     this.client = client;
@@ -72,30 +80,14 @@ export default class UserDAO {
     }
   }
 
-  async updateUser(data: createUserDTO, id: string): Promise<User | null> {
+  async updateUser({ name, id, birth, e_mail }: updateUserDTO): Promise<void> {
     try {
-      const result = await this.client.query(
-        'UPDATE estudante SET nome=$1, email=$2, datanascimento=$3 WHERE idestudante=$4 RETURNING *',
-        [data.name, data.e_mail, data.birth, id],
+      await this.client.query(
+        'UPDATE estudante SET nome=upper($1), email=$2, datanascimento=$3 WHERE idestudante=$4',
+        [name, e_mail, birth, id],
       );
 
-      const users = result.rows.map((item) => {
-        const { idestudante, nome, email, senha, datanascimento } = item;
-
-        const user = new User({
-          birth: datanascimento,
-          id: idestudante,
-          name: nome,
-          password: senha,
-          email,
-        });
-
-        return user;
-      });
-
       this.client.release();
-
-      return users[0];
     } catch (err) {
       this.client.release();
       throw new AppError(err);
@@ -163,8 +155,9 @@ export default class UserDAO {
       }
     } catch (err) {
       this.client.release();
-      throw new AppError(err);
+      throw new AppError(err, 500);
     }
+
     return null;
   }
 
@@ -257,7 +250,7 @@ export default class UserDAO {
   async save({ name, e_mail, password, birth }: createUserDTO): Promise<User> {
     try {
       const data = await this.client.query(
-        'INSERT INTO estudante(nome, email, senha, datanascimento) VALUES($1,$2,$3, $4) RETURNING *',
+        'INSERT INTO estudante(nome, email, senha, datanascimento) VALUES(upper($1),$2,$3, $4) RETURNING *',
         [name, e_mail, password, birth],
       );
 

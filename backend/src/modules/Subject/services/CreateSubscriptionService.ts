@@ -8,7 +8,7 @@ interface RequestDTO {
 }
 
 export default class ListSubjectService {
-  subjectDao: SubjectDAO;
+  private subjectDao: SubjectDAO;
 
   constructor(client: PoolClient) {
     this.subjectDao = new SubjectDAO(client);
