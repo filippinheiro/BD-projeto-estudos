@@ -8,6 +8,7 @@ export default class UserController {
     const listUsers = new ListUsersService(request.client);
 
     const users = await listUsers.execute();
+
     return response.json(users);
   }
 

@@ -16,9 +16,9 @@ export default class TaskController {
   public async update(request: Request, response: Response): Promise<Response> {
     const updateTask = new UpdateTaskService(request.client);
 
-    const { taskId, description } = request.body;
+    const { taskId, description, complete = false } = request.body;
 
-    await updateTask.execute({ id: taskId, description });
+    await updateTask.execute({ id: taskId, description, complete });
 
     return response.status(204).json();
   }
