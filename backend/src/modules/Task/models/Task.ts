@@ -1,6 +1,7 @@
 interface TaskDTO {
   id: string;
   description: string;
+  complete?: boolean;
 }
 
 export default class Task {
@@ -8,8 +9,11 @@ export default class Task {
 
   description: string;
 
-  constructor({ description, id }: TaskDTO) {
+  complete: boolean;
+
+  constructor({ complete = false, description, id }: TaskDTO) {
     this.id = id;
     this.description = description;
+    this.complete = complete;
   }
 }

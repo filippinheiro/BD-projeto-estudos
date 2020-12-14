@@ -48,7 +48,7 @@ CREATE TABLE Assunto (
 CREATE TABLE Simulado (
   idSimulado uuid UNIQUE DEFAULT uuid_generate_v4(),
   titulo VARCHAR(100) NOT NULL,
-  nota DECIMAL NOT NULL,
+  nota DECIMAL NOT NULL DEFAULT 0,
   idMateria uuid,
   idEstudante uuid,
   CONSTRAINT pkAvaliacao
@@ -59,10 +59,9 @@ CREATE TABLE Simulado (
 
 CREATE TABLE Estudo (
   idEstudo uuid UNIQUE DEFAULT uuid_generate_v4(),
-  horarioIni TIMESTAMP DEFAULT NOW(),
-  horaFim TIMESTAMP,
   idMateria uuid,
   idEstudante uuid,
+  data Date
   CONSTRAINT pkEstudo
     PRIMARY KEY(idEstudo),
   CONSTRAINT fkMateria
@@ -73,6 +72,7 @@ CREATE TABLE Tarefa (
   idTarefa uuid UNIQUE DEFAULT uuid_generate_v4(),
   descricao VARCHAR(100) NOT NULL,
   idEstudante uuid,
+  completo boolean DEFAULT false;
   CONSTRAINT pkTarefa PRIMARY KEY(idTarefa),
   CONSTRAINT fkTarefa FOREIGN KEY(idEstudante) REFERENCES Estudante(idEstudante) ON DELETE CASCADE
 );

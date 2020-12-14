@@ -5,6 +5,7 @@ import TaskDAO from '../DAO/TaskDAO';
 interface RequestDTO {
   id: string;
   description: string;
+  complete: boolean;
 }
 
 export default class UpdateTaskService {
@@ -14,9 +15,14 @@ export default class UpdateTaskService {
     this.taskDao = new TaskDAO(client);
   }
 
-  public async execute({ description, id }: RequestDTO): Promise<void> {
+  public async execute({
+    description,
+    id,
+    complete,
+  }: RequestDTO): Promise<void> {
     try {
-      await this.taskDao.update(description, id);
+      await this.taskDao.update(description, id, complete);
+      
     } catch (err) {
       throw new AppError(err);
     }

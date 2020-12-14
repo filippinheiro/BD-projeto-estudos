@@ -14,12 +14,23 @@ export default class TaskDAO {
     this.client = client;
   }
 
-  public async update(description: string, id: string): Promise<void> {
+  // public async markComplete(id: string) {
+  //   try {
+  //     await this.client.query()
+  //   }
+  // }
+
+  public async update(
+    description: string,
+    id: string,
+    complete = false,
+  ): Promise<void> {
     try {
       await this.client.query(
-        'UPDATE tarefa SET descricao=$1 WHERE idtarefa=$2',
-        [description, id],
+        'UPDATE tarefa SET descricao=$1, concluido=$2 WHERE idtarefa=$3',
+        [description, complete, id],
       );
+
       this.client.release();
     } catch (err) {
       this.client.release();
@@ -70,9 +81,13 @@ export default class TaskDAO {
 
     if (results.rowCount > 0) {
       tasks = results.rows.map((item) => {
-        const { descricao, idtarefa } = item;
+        const { descricao, idtarefa, concluido } = item;
 
-        return new Task({ description: descricao, id: idtarefa });
+        return new Task({
+          description: descricao,
+          id: idtarefa,
+          complete: concluido,
+        });
       });
     }
 
